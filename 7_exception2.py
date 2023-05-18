@@ -22,11 +22,16 @@ def discounted(price, discount, max_discount=20):
         price = abs(float(price))
         discount = abs(float(discount))
         max_discount = abs(int(max_discount))
-    except ValueError:
-        raise ValueError('Price and discount needs to be values. Maximum discount needs to be an integer.')
+    except ValueError or TypeError:
+        print('Price and discount needs to be numbers. Maximum discount needs to be an integer.')
+        print('Zero price is returned.')
+        return 0
     if max_discount >= 100:
-        raise ValueError('Discount value is too high!')
+        print('Max discount value is too high!')
+        print('Zero price is returned.')
+        return 0
     if discount >= max_discount:
+        print('Actual price value is greater than maximum value allowed. Initial price value is returned.')
         price_with_discount = price
     else:
         price_with_discount = price - price * discount / 100

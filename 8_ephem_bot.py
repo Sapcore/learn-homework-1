@@ -13,45 +13,48 @@
 
 """
 import logging
-
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+import ephem
+from datetime import date
 
-logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO,
-                    filename='bot.log')
+import settings
 
-
-PROXY = {
-    'proxy_url': 'socks5://t1.learn.python.ru:1080',
-    'urllib3_proxy_kwargs': {
-        'username': 'learn',
-        'password': 'python'
-    }
-}
+logging.basicConfig(filename='bot.log', level=logging.INFO)
 
 
 def greet_user(update, context):
-    text = 'Вызван /start'
-    print(text)
-    update.message.reply_text(text)
+    print('/start command initiated')
+    update.message.reply_text('Hello dear friend! You have called the "/start" command')
 
 
 def talk_to_me(update, context):
     user_text = update.message.text
     print(user_text)
-    update.message.reply_text(text)
+    update.message.reply_text(user_text)
 
 
 def main():
-    mybot = Updater("КЛЮЧ, КОТОРЫЙ НАМ ВЫДАЛ BotFather", request_kwargs=PROXY, use_context=True)
+    mybot = Updater(settings.API_TOKEN, use_context=True)
 
     dp = mybot.dispatcher
-    dp.add_handler(CommandHandler("start", greet_user))
+    dp.add_handler(CommandHandler('start', greet_user))
     dp.add_handler(MessageHandler(Filters.text, talk_to_me))
 
+    print('I have been started')
+    logging.info('Bot is initiated')
     mybot.start_polling()
     mybot.idle()
 
 
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    # main()
+    # TODO unlock main()
+    # TODO create dict {'mercury': ephem.mercury.....}
+    # TODO call constellation as ephem.constellation(dict['mercury'](date.today()))
+
+    m = ephem.Mars(date.today())
+    print(ephem.constellation(m))
+
+    dict = {'mars': ephem.Mars}
+    const = ephem.constellation(dict['mars'](date.today()))
+    print(const)
