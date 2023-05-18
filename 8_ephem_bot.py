@@ -52,9 +52,16 @@ if __name__ == '__main__':
     # TODO create dict {'mercury': ephem.mercury.....}
     # TODO call constellation as ephem.constellation(dict['mercury'](date.today()))
 
-    m = ephem.Mars(date.today())
-    print(ephem.constellation(m))
+    planet_dict = {
+        'mercury': ephem.Mercury,
+        'venus': ephem.Venus,
+        'mars': ephem.Mars,
+        'jupiter': ephem.Jupiter,
+        'saturn': ephem.Saturn,
+        'uranus': ephem.Uranus,
+        'neptune': ephem.Neptune,
+    }
 
-    dict = {'mars': ephem.Mars}
-    const = ephem.constellation(dict['mars'](date.today()))
+    const = ephem.constellation(planet_dict['mercury'](date.today()))
     print(const)
+
