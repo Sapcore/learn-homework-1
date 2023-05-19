@@ -20,6 +20,17 @@ from datetime import date
 import settings
 
 logging.basicConfig(filename='bot.log', level=logging.INFO)
+planet = 0
+
+planet_dict = {
+    'mercury': ephem.Mercury,
+    'venus': ephem.Venus,
+    'mars': ephem.Mars,
+    'jupiter': ephem.Jupiter,
+    'saturn': ephem.Saturn,
+    'uranus': ephem.Uranus,
+    'neptune': ephem.Neptune,
+}
 
 
 def greet_user(update, context):
@@ -27,10 +38,27 @@ def greet_user(update, context):
     update.message.reply_text('Hello dear friend! You have called the "/start" command')
 
 
+def check_planet(update, context):
+    print('/planet command initiated')
+    update.message.reply_text('Please define a planet name and I can tell you where it is located.')
+    global planet
+    planet = 1
+
+
 def talk_to_me(update, context):
     user_text = update.message.text
+    global planet
     print(user_text)
-    update.message.reply_text(user_text)
+    if planet:
+        if planet_dict.get(user_text.lower(), 0) != 0:
+            const = ephem.constellation(planet_dict[user_text.lower()](date.today()))[1]
+            const = f'{user_text.capitalize()} is currently ({date.today()}) at {const}'
+        else:
+            const = 'There is no such planet'
+        update.message.reply_text(const)
+        planet = 0
+    else:
+        update.message.reply_text(user_text)
 
 
 def main():
@@ -38,6 +66,7 @@ def main():
 
     dp = mybot.dispatcher
     dp.add_handler(CommandHandler('start', greet_user))
+    dp.add_handler(CommandHandler('planet', check_planet))
     dp.add_handler(MessageHandler(Filters.text, talk_to_me))
 
     print('I have been started')
@@ -47,21 +76,4 @@ def main():
 
 
 if __name__ == '__main__':
-    # main()
-    # TODO unlock main()
-    # TODO create dict {'mercury': ephem.mercury.....}
-    # TODO call constellation as ephem.constellation(dict['mercury'](date.today()))
-
-    planet_dict = {
-        'mercury': ephem.Mercury,
-        'venus': ephem.Venus,
-        'mars': ephem.Mars,
-        'jupiter': ephem.Jupiter,
-        'saturn': ephem.Saturn,
-        'uranus': ephem.Uranus,
-        'neptune': ephem.Neptune,
-    }
-
-    const = ephem.constellation(planet_dict['mercury'](date.today()))
-    print(const)
-
+    main()
